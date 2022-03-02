@@ -77,7 +77,7 @@ const displayPhoneDetails = (phone) => {
         <h3>Others: <span class='font-bold'>${NO_INFO_FOUND}</span></h3>
     `)
 
-  //Show Spinner
+  //Spinner
   hideElement('spinner')
   showElement('phone-details')
 }
@@ -98,7 +98,7 @@ const displayPhoneInfo = (phones, showAll = false) => {
   const cardContainer = document.getElementById('card-container')
   cardContainer.textContent = ''
 
-  //20 search results
+  //20 Search Results
   let filteredPhones = []
   filteredPhones = showAll ? phones : phones?.filter((phone, i) => i < 20)
   filteredPhones.forEach((phone) => {
@@ -118,7 +118,7 @@ const displayPhoneInfo = (phones, showAll = false) => {
     cardContainer.appendChild(div)
   })
 
-  //Hiding spinner
+  //Hide Spinner
   hideElement('spinner-result')
   showElement('search-result-container')
 
@@ -131,6 +131,7 @@ const displayPhoneInfo = (phones, showAll = false) => {
 //Phone Results
 const searchPhone = async () => {
   const boxText = inputText('input-field')
+  
   // Error Messege
   if (boxText === -1) {
     document.getElementById(
