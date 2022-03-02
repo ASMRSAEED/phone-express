@@ -1,8 +1,7 @@
-/* Phone Search result Stored Globaly for Accessing 
-Later to display all the results */
+// Phone Scarch
 let phonesInfo = []
 
-//Constant Object for font-awesome icons Class
+//Font Awesome Icons 
 const iconsMap = {
   radio: 'fa-solid fa-tower-broadcast',
   usb: 'fa-brands fa-usb',
@@ -12,7 +11,7 @@ const iconsMap = {
   nfc: 'fa-solid fa-satellite-dish',
 }
 
-// Function for getting the searchText from the inpuit field
+// Inpuit field
 const getSearchText = (searchFieldId) => {
   const searchField = document.getElementById(searchFieldId)
   const searchText = searchField.value
@@ -20,23 +19,21 @@ const getSearchText = (searchFieldId) => {
   return searchText ? searchText : -1
 }
 
-// Functions for Show or hide any element
-//-------------------------------------
+// Show And Hide Elements
 const showElement = (elementId) => {
   document.getElementById(elementId).classList.remove('hidden')
 }
 const hideElement = (elementId) => {
   document.getElementById(elementId).classList.add('hidden')
 }
-//-----------------------------------------
 
-//getting Dynamic url from parameters
+//API
 const getfetchUrl = (searchId, search = false) => {
   const baseUrl = 'https://openapi.programming-hero.com/api/phone'
   return (fetchUrl = `${baseUrl}${search ? 's?search=' : '/'}${searchId}`)
 }
 
-//Function for fetching Data from the Api
+//Details From API
 const fetchPhoneInfo = async (fetchUrl) => {
   try {
     const res = await fetch(fetchUrl)
@@ -47,15 +44,13 @@ const fetchPhoneInfo = async (fetchUrl) => {
   }
 }
 
-//Function for Displaying Phone Details
+//Phone Details
 const displayPhoneDetails = (phone) => {
-  //destructuring all the info the phone object
   const { name, brand, image, releaseDate, mainFeatures, others } = phone
   const { chipSet, displaySize, memory, sensors, storage } = mainFeatures
-  const NO_INFO_FOUND = 'No Info Found'
+  const NO_INFO_FOUND = 'No Release Date Found'
 
-  //Displaying information to the dom
-  document.getElementById('phone-details-header').innerText = `${name} Details`
+  //All Phone Details
   document.getElementById('phone-image').src = image
   document.getElementById('phone-name').innerText = name
   document.getElementById('release-date').innerText = releaseDate
@@ -92,40 +87,34 @@ const displayPhoneDetails = (phone) => {
         <h3>Others: <span class='font-bold'>${NO_INFO_FOUND}</span></h3>
     `)
 
-  //Hiding Spinner and Showing Phone details
+  //Show Spinner
   hideElement('spinner')
   showElement('phone-details')
 }
 
-//Searching for Phone Details
+//Phone Details
 const searchPhoneDetails = async (phoneId) => {
-  //Scrolling To the Top of the page
   window.scrollTo(0, 0)
-  //Showing Spinner and Hiding any Previous Details
   showElement('spinner')
   !document.getElementById('phone-details').classList.contains('hidden') &&
     hideElement('phone-details')
-  //creating and fetching data from the api
   const fetchUrl = getfetchUrl(phoneId)
   const phoneDetails = await fetchPhoneInfo(fetchUrl)
   displayPhoneDetails(phoneDetails)
 }
 
-//Function for Displaying Phone Search Result to the dom
+//Phone Search Result
 const displayPhoneInfo = (phones, showAll = false) => {
   const cardContainer = document.getElementById('card-container')
-  //Emptying or removing any previous children from the card container
   cardContainer.textContent = ''
 
-  //filtering phone to show only 20 search results
+  //20 search results
   let filteredPhones = []
   filteredPhones = showAll ? phones : phones?.filter((phone, i) => i < 20)
-  //Looping through the results and append each child to the cardContainer
   filteredPhones.forEach((phone) => {
     const { brand, image, phone_name, slug } = phone
     const div = document.createElement('div')
     div.classList.add('card')
-    //an arrow right svg is added to the button
     div.innerHTML = `
             <div class='card__img-container'>
                 <img src="${image}" alt='Picture of ${phone_name}' />
@@ -139,14 +128,51 @@ const displayPhoneInfo = (phones, showAll = false) => {
     cardContainer.appendChild(div)
   })
 
-  //hiding spinner and showing search results
+  //Hiding spinner
   hideElement('spinner-result')
   showElement('search-result-container')
 
-  //hiding or showing show all button
+  //Show All Button
   !showAll && phones.length > 20
     ? showElement('show-all-btn')
     : hideElement('show-all-btn')
 }
 
+//Phone Results
+const searchPhone = async () => {
+  const searchText = getSearchText('search-field')
+  // Error Messege
+  if (searchText === -1) {
+    document.getElementById(
+      'error-message'
+    ).innerText = `"Please Enter a Phone Brand Name"`
+    return
+  }
+  document.getElementById('error-message').innerText = ''
 
+  //Show Spinner
+  showElement('spinner-result')
+  !document
+    .getElementById('search-result-container')
+    .classList.contains('hidden') && hideElement('search-result-container')
+  !document.getElementById('phone-details').classList.contains('hidden') &&
+    hideElement('phone-details')
+
+  //API
+  const fetchUrl = getfetchUrl(searchText?.toLowerCase(), true)
+  phonesInfo = await fetchPhoneInfo(fetchUrl)
+  const heading = document.getElementById('search-result-header')
+  heading.innerText = `${phonesInfo.length > 0 ? 'Result Found For' : 'No Result Found For'
+    } ${searchText}`
+
+  displayPhoneInfo(phonesInfo)
+}
+
+//Display All
+const showAllSearchResults = () => {
+  displayPhoneInfo(phonesInfo, true)
+}
+//Hide All
+const hidePhoneDetails = () => {
+  hideElement('phone-details')
+}
