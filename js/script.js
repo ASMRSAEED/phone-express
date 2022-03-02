@@ -1,15 +1,5 @@
 // Phone Scarch
-let phonesInfo = []
-
-//Font Awesome Icons 
-const iconsMap = {
-  radio: 'fa-solid fa-tower-broadcast',
-  usb: 'fa-brands fa-usb',
-  wlan: 'fa-solid fa-wifi',
-  bluetooth: 'fa-brands fa-bluetooth',
-  gps: 'fa-solid fa-globe',
-  nfc: 'fa-solid fa-satellite-dish',
-}
+let phoneData = []
 
 // Inpuit field
 const getSearchText = (searchFieldId) => {
@@ -77,7 +67,7 @@ const displayPhoneDetails = (phone) => {
     ? Object.entries(others).forEach(([key, value]) => {
       const h3 = document.createElement('h3')
       h3.innerHTML = `
-          <i class="mr-1.5 ${iconsMap[key.toLowerCase()]}"></i>
+          <i class="mr-1.5 ${[key.toLowerCase()]}"></i>
             ${key}: <span class='font-bold'>${value ? value : NO_INFO_FOUND
         }</span>
         `
@@ -160,17 +150,17 @@ const searchPhone = async () => {
 
   //API
   const fetchUrl = getfetchUrl(searchText?.toLowerCase(), true)
-  phonesInfo = await fetchPhoneInfo(fetchUrl)
+  phoneData = await fetchPhoneInfo(fetchUrl)
   const heading = document.getElementById('search-result-header')
-  heading.innerText = `${phonesInfo.length > 0 ? 'Result Found For' : 'No Result Found For'
+  heading.innerText = `${phoneData.length > 0 ? 'Result Found For' : 'No Result Found For'
     } ${searchText}`
 
-  displayPhoneInfo(phonesInfo)
+  displayPhoneInfo(phoneData)
 }
 
 //Display All
 const showAllSearchResults = () => {
-  displayPhoneInfo(phonesInfo, true)
+  displayPhoneInfo(phoneData, true)
 }
 //Hide All
 const hidePhoneDetails = () => {
