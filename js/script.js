@@ -1,12 +1,12 @@
 // Phone Scarch
 let phoneData = []
 
-// Inpuit field
-const getSearchText = (searchFieldId) => {
-  const searchField = document.getElementById(searchFieldId)
-  const searchText = searchField.value
-  searchField.value = ''
-  return searchText ? searchText : -1
+// Input Field
+const inputText = (inputBoxId) => {
+  const inputField = document.getElementById(inputBoxId)
+  const boxText = inputField.value
+  inputField.value = ''
+  return boxText ? boxText : -1
 }
 
 // Show And Hide Elements
@@ -130,15 +130,15 @@ const displayPhoneInfo = (phones, showAll = false) => {
 
 //Phone Results
 const searchPhone = async () => {
-  const searchText = getSearchText('search-field')
+  const boxText = inputText('input-field')
   // Error Messege
-  if (searchText === -1) {
+  if (boxText === -1) {
     document.getElementById(
-      'error-message'
-    ).innerText = `"Please Enter a Phone Brand Name"`
+      'error-msg'
+    ).innerText = `"Please Enter Phone Brand Name"`
     return
   }
-  document.getElementById('error-message').innerText = ''
+  document.getElementById('error-msg').innerText = ''
 
   //Show Spinner
   showElement('spinner-result')
@@ -149,11 +149,11 @@ const searchPhone = async () => {
     hideElement('phone-details')
 
   //API
-  const fetchUrl = getfetchUrl(searchText?.toLowerCase(), true)
+  const fetchUrl = getfetchUrl(boxText?.toLowerCase(), true)
   phoneData = await fetchPhoneInfo(fetchUrl)
   const heading = document.getElementById('search-result-header')
   heading.innerText = `${phoneData.length > 0 ? 'Result Found For' : 'No Result Found For'
-    } ${searchText}`
+    } ${boxText}`
 
   displayPhoneInfo(phoneData)
 }
